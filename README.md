@@ -40,14 +40,15 @@ Skills are uploaded one file at a time via **Settings → Customize → Skills �
 
 To add a specific skill on its own, upload its `SKILL.md` from `skills/<name>/` or `domains/<domain>/skills/<skill-name>/`.
 
-### Other models (ChatGPT, Gemini, …)
+### Other models (ChatGPT, Gemini, Cursor, …)
 
-A skill is just markdown, so any capable model can use it — you paste the skill text instead of triggering it with a slash command.
+A skill is a standing-instructions file. Load it wherever a platform keeps persistent instructions and the model applies it for the whole session — no chat pasting:
 
-- **For one task:** paste a `SKILL.md` at the top of the chat and say "follow this."
-- **For a whole session:** put a `SKILL.md` in the model's custom instructions, or use `skills/fable/SKILL.md` as the instructions for a Custom GPT / Gemini Gem to get the same auto-routing `/fable` gives in Claude.
+- **API** — pass a `SKILL.md` as the `system` prompt (OpenAI, Gemini, Anthropic, or any provider).
+- **Assistants & projects** — a Custom GPT, Gemini Gem, or ChatGPT/Claude Project. Put a skill in its instructions, or drop several into its knowledge base and let the model pull the right one.
+- **AI coding tools** — as a rules file: `.cursorrules` (Cursor), `.windsurfrules` (Windsurf), or `AGENTS.md` / `CLAUDE.md` at the repo root.
 
-The only thing that's Claude-specific is the `/skill-name` trigger. The discipline itself is fully portable.
+Use `skills/fable/SKILL.md` in any of these to get the same domain auto-routing `/fable` provides in Claude. The only Claude-specific part is the `/skill-name` trigger — the discipline is fully portable.
 
 ---
 
