@@ -42,13 +42,12 @@ To add a specific skill on its own, upload its `SKILL.md` from `skills/<name>/` 
 
 ### Other models (ChatGPT, Gemini, …)
 
-A skill is just a markdown file of principles and procedures — there's nothing Claude-specific in the content, so any capable model can follow it. What's Claude-specific is the *auto-invocation* (`/fable` and the Skills UI); on other platforms you supply the skill text directly:
+A skill is just markdown, so any capable model can use it — you paste the skill text instead of triggering it with a slash command.
 
-- **System prompt / custom instructions.** Paste the body of a `SKILL.md` into the model's system prompt or custom-instructions field. It then follows that discipline for the whole session.
-- **Custom GPT / Gem.** Create a Custom GPT (or Gemini Gem) and paste `skills/fable/SKILL.md` as its instructions — it becomes a domain-routing assistant that applies the right gates automatically, the same way `/fable` does in Claude.
-- **Inline, per task.** Paste the relevant `SKILL.md` at the top of a conversation and say "follow this for the task below." Best when you already know which skill you need.
+- **For one task:** paste a `SKILL.md` at the top of the chat and say "follow this."
+- **For a whole session:** put a `SKILL.md` in the model's custom instructions, or use `skills/fable/SKILL.md` as the instructions for a Custom GPT / Gemini Gem to get the same auto-routing `/fable` gives in Claude.
 
-The router (`/fable`) is written as instructions, so it works this way too: paste it and tell the model to act as the router. The only thing you lose off-Claude is the automatic `/skill-name` trigger — the discipline itself is fully portable.
+The only thing that's Claude-specific is the `/skill-name` trigger. The discipline itself is fully portable.
 
 ---
 
