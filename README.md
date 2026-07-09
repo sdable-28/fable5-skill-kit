@@ -1,4 +1,4 @@
-# fable-kit
+# fable5-skill-kit
 
 A collection of discipline skills for Claude — built by Fable 5, usable by any model.
 
@@ -23,7 +23,7 @@ Every skill in this kit is a set of operating instructions: principles, verifica
 
 **Windows (PowerShell):**
 ```powershell
-irm https://raw.githubusercontent.com/YOUR_USERNAME/fable-kit/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/YOUR_USERNAME/fable5-skill-kit/main/install.ps1 | iex
 ```
 
 Or download and run locally:
@@ -33,7 +33,7 @@ Or download and run locally:
 
 **Mac / Linux (bash):**
 ```bash
-curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/fable-kit/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/fable5-skill-kit/main/install.sh | bash
 ```
 
 After install, restart Claude Code. Use any skill with `/skill-name` in conversation.
