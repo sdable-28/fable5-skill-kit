@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fable5-skill-kit"
+version = "1.0.0"
+description = "Discipline skills for Claude — built by Fable 5, usable by any model"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.8"
+keywords = ["claude", "skills", "ai", "fable", "anthropic"]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+]
+
+[project.urls]
+Homepage = "https://github.com/sdable-28/fable5-skill-kit"
+
+[project.scripts]
+fable5-skill-kit = "fable5_skill_kit.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["fable5_skill_kit*"]
+
+[tool.setuptools.package-data]
+"*" = ["skills/**/*.md", "domains/**/*.md"]
