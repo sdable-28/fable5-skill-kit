@@ -1,0 +1,22 @@
+{
+  "name": "fable5-skill-kit",
+  "version": "1.0.0",
+  "description": "Discipline skills for Claude — built by Fable 5, usable by any model",
+  "bin": {
+    "fable5-skill-kit": "bin/install.js"
+  },
+  "files": [
+    "bin/",
+    "skills/",
+    "domains/"
+  ],
+  "keywords": ["claude", "skills", "ai", "fable", "anthropic"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sdable-28/fable5-skill-kit.git"
+  },
+  "engines": {
+    "node": ">=16"
+  }
+}

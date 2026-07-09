@@ -1,0 +1,2 @@
+[console_scripts]
+fable5 = fable5_skill_kit.cli:main
