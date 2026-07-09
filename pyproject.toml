@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "fable5-skill-kit"
-version = "1.0.0"
+version = "1.0.2"
 description = "Discipline skills for Claude — built by Fable 5, usable by any model"
 readme = "README.md"
 license = { text = "MIT" }
@@ -19,11 +19,11 @@ classifiers = [
 Homepage = "https://github.com/sdable-28/fable5-skill-kit"
 
 [project.scripts]
-fable5-skill-kit = "fable5_skill_kit.cli:main"
+fable5 = "fable5_skill_kit.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["fable5_skill_kit*"]
 
 [tool.setuptools.package-data]
-"*" = ["skills/**/*.md", "domains/**/*.md"]
+fable5_skill_kit = ["skills/**/*.md", "domains/**/*.md"]

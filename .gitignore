@@ -4,3 +4,8 @@ Thumbs.db
 __pycache__/
 *.egg-info/
 .env
+dist/
+build/
+# build-time copies of skills bundled into the package
+fable5_skill_kit/skills/
+fable5_skill_kit/domains/

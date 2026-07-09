@@ -22,7 +22,8 @@ Every skill is a set of operating instructions: principles, verification gates, 
 ### Claude Code
 
 ```
-pip install fable5-skill-kit && fable5-skill-kit
+pip install fable5-skill-kit
+fable5
 ```
 
 Copies all skills into `~/.claude/skills/`. Restart Claude Code, then use any skill with `/skill-name` in conversation.
