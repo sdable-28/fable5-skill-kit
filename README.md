@@ -2,7 +2,7 @@
 
 **Make Claude check its work.** Language models are capable of far more rigor than they apply by default. Left alone, Claude will pattern-match to a plausible answer, skip the verification step, and present a guess with the same confidence as a checked fact — the bug "should be fixed," the backtest "looks good," the clause "seems fine." fable5-skill-kit closes that gap. It's a library of *discipline skills* — compact operating procedures that make Claude slow down at exactly the moments that matter: reproduce the failure before fixing it, name the fill model before trusting a backtest, cite the primary source before stating a legal rule, prove the attacker path before calling something a vulnerability. The result is output you can rely on — fewer confident-but-wrong answers, fewer skipped steps, fewer things quietly missed.
 
-Built by **Fable 5**. Works with any Claude model — Haiku, Sonnet, Opus, Fable — and, because every skill is just plain markdown, with any capable LLM (ChatGPT, Gemini, and others). See [Other models](#other-models-chatgpt-gemini-) for how.
+Built by **Fable 5**. Works with any Claude model — Haiku, Sonnet, Opus, Fable.
 
 **109 skills total:** 2 router skills + 26 universal skills + 81 domain skills across 17 domains. The master skill `/fable` auto-detects your domain and activates the right discipline, so you invoke *one* skill at session start and it handles the routing.
 
@@ -39,27 +39,6 @@ Skills are uploaded one file at a time via **Settings → Customize → Skills �
 **To cover all 17 domains in a single upload:** upload `skills/fable/SKILL.md`. The master router is self-contained — it embeds the condensed principles and verification gates for every domain and routes automatically, so you don't need to upload the individual domain skills.
 
 To add a specific skill on its own, upload its `SKILL.md` from `skills/<name>/` or `domains/<domain>/skills/<skill-name>/`.
-
-### Other models (ChatGPT, Gemini, …)
-
-A skill is just a text file of instructions, so any model can use it. Other platforms don't have the `/skill-name` shortcut, so instead of *triggering* a skill you *save it once* as the model's instructions — then it applies automatically every time you use that assistant.
-
-Start with **`skills/fable/SKILL.md`** — it's the router, so this one file covers all 17 domains.
-
-**ChatGPT** (a Custom GPT — reusable, applies automatically):
-1. Open [`skills/fable/SKILL.md`](skills/fable/SKILL.md) and copy all of its text.
-2. Go to **chatgpt.com → Explore GPTs → Create**.
-3. Open the **Configure** tab and paste the text into the **Instructions** box.
-4. Name it "Fable" and click **Create**. Chatting with that GPT now applies the skill on every message.
-
-**Gemini** (a Gem — same idea):
-1. Copy the text of [`skills/fable/SKILL.md`](skills/fable/SKILL.md).
-2. Go to **gemini.google.com → Gems → New Gem**.
-3. Paste the text into the **Instructions** box and **Save**.
-
-To use one specific skill instead of the router, do the exact same steps with that skill's `SKILL.md` (e.g. `domains/trading-finance/skills/backtest-discipline/SKILL.md`).
-
-> **Developers:** the same file works as the `system` prompt via any API (OpenAI, Gemini, Anthropic), or as a rules file (`.cursorrules`, `.windsurfrules`, `AGENTS.md`) in AI coding tools.
 
 ---
 
@@ -221,7 +200,7 @@ fable5-skill-kit/
 ## Notes
 
 - **Opt-in and safe.** Skills only activate when you invoke them. They do not modify the model's system prompt or change default behavior when unused.
-- **Model-agnostic.** Written by Fable 5 for maximum rigor, but the skills are plain markdown — useful on any Claude model and portable to other LLMs (see [Other models](#other-models-chatgpt-gemini-)).
+- **Model-agnostic.** Written by Fable 5 for maximum rigor, but readable and useful on any Claude model — Haiku, Sonnet, Opus, Fable.
 - **Healthcare.** The healthcare-life-sciences domain currently ships its domain pack and verification gates; dedicated skills are pending a follow-up session to meet the evidence standards that field requires.
 
 ## License
