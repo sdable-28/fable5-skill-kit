@@ -2,7 +2,7 @@
 
 **Make Claude check its work.** Language models are capable of far more rigor than they apply by default. Left alone, Claude will pattern-match to a plausible answer, skip the verification step, and present a guess with the same confidence as a checked fact — the bug "should be fixed," the backtest "looks good," the clause "seems fine." fable5-skill-kit closes that gap. It's a library of *discipline skills* — compact operating procedures that make Claude slow down at exactly the moments that matter: reproduce the failure before fixing it, name the fill model before trusting a backtest, cite the primary source before stating a legal rule, prove the attacker path before calling something a vulnerability. The result is output you can rely on — fewer confident-but-wrong answers, fewer skipped steps, fewer things quietly missed.
 
-Built by **Fable 5**. Works with any Claude model — Haiku, Sonnet, Opus, Fable.
+Built by **Fable 5**. Works with any Claude model — Haiku, Sonnet, Opus, Fable — and, because every skill is just plain markdown, with any capable LLM (ChatGPT, Gemini, and others). See [Other models](#other-models-chatgpt-gemini-) for how.
 
 **109 skills total:** 2 router skills + 26 universal skills + 81 domain skills across 17 domains. The master skill `/fable` auto-detects your domain and activates the right discipline, so you invoke *one* skill at session start and it handles the routing.
 
@@ -39,6 +39,16 @@ Skills are uploaded one file at a time via **Settings → Customize → Skills �
 **To cover all 17 domains in a single upload:** upload `skills/fable/SKILL.md`. The master router is self-contained — it embeds the condensed principles and verification gates for every domain and routes automatically, so you don't need to upload the individual domain skills.
 
 To add a specific skill on its own, upload its `SKILL.md` from `skills/<name>/` or `domains/<domain>/skills/<skill-name>/`.
+
+### Other models (ChatGPT, Gemini, …)
+
+A skill is just a markdown file of principles and procedures — there's nothing Claude-specific in the content, so any capable model can follow it. What's Claude-specific is the *auto-invocation* (`/fable` and the Skills UI); on other platforms you supply the skill text directly:
+
+- **System prompt / custom instructions.** Paste the body of a `SKILL.md` into the model's system prompt or custom-instructions field. It then follows that discipline for the whole session.
+- **Custom GPT / Gem.** Create a Custom GPT (or Gemini Gem) and paste `skills/fable/SKILL.md` as its instructions — it becomes a domain-routing assistant that applies the right gates automatically, the same way `/fable` does in Claude.
+- **Inline, per task.** Paste the relevant `SKILL.md` at the top of a conversation and say "follow this for the task below." Best when you already know which skill you need.
+
+The router (`/fable`) is written as instructions, so it works this way too: paste it and tell the model to act as the router. The only thing you lose off-Claude is the automatic `/skill-name` trigger — the discipline itself is fully portable.
 
 ---
 
@@ -200,7 +210,7 @@ fable5-skill-kit/
 ## Notes
 
 - **Opt-in and safe.** Skills only activate when you invoke them. They do not modify the model's system prompt or change default behavior when unused.
-- **Model-agnostic.** Written by Fable 5 for maximum rigor, but readable and useful on any Claude model.
+- **Model-agnostic.** Written by Fable 5 for maximum rigor, but the skills are plain markdown — useful on any Claude model and portable to other LLMs (see [Other models](#other-models-chatgpt-gemini-)).
 - **Healthcare.** The healthcare-life-sciences domain currently ships its domain pack and verification gates; dedicated skills are pending a follow-up session to meet the evidence standards that field requires.
 
 ## License
