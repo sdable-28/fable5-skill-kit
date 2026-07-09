@@ -1,19 +1,22 @@
 # fable5-skill-kit
 
-Discipline skills for Claude — built by Fable 5, usable by any model.
+**Make Claude check its work.** Language models are capable of far more rigor than they apply by default. Left alone, Claude will pattern-match to a plausible answer, skip the verification step, and present a guess with the same confidence as a checked fact — the bug "should be fixed," the backtest "looks good," the clause "seems fine." fable5-skill-kit closes that gap. It's a library of *discipline skills* — compact operating procedures that make Claude slow down at exactly the moments that matter: reproduce the failure before fixing it, name the fill model before trusting a backtest, cite the primary source before stating a legal rule, prove the attacker path before calling something a vulnerability. The result is output you can rely on — fewer confident-but-wrong answers, fewer skipped steps, fewer things quietly missed.
 
-26 universal skills + 81 domain skills across 17 domains. The master skill `/fable` auto-detects your domain and activates the right discipline — invoke it once at session start and it handles the rest.
+Built by **Fable 5**. Works with any Claude model — Haiku, Sonnet, Opus, Fable.
+
+**109 skills total:** 2 router skills + 26 universal skills + 81 domain skills across 17 domains. The master skill `/fable` auto-detects your domain and activates the right discipline, so you invoke *one* skill at session start and it handles the routing.
 
 ---
 
 ## What is this
 
-Every skill is a set of operating instructions: principles, verification gates, and procedures for a specific type of work. They don't change what Claude can do — they change how rigorously it does it.
+Every skill is a `SKILL.md` file — a set of operating instructions written for the model: core principles, pass/fail verification gates, and step-by-step procedures for a specific type of work. Skills don't add new capabilities. They change *how rigorously* Claude uses the capabilities it already has.
 
-- **Universal skills** apply to any domain: adversarial disproof, evidence reasoning, plan gating, code investigation, root cause analysis, and more.
-- **Domain skills** apply the right discipline for specific work: backtest rigor for trading, threat modeling for security, mom-test compliance for startups, and so on across 17 domains.
-- **`/fable`** is the master router: reads your context, detects the domain, activates the right principles and gates, and lists which skills to use next.
-- **`/fable-mode`** adds maximum investigation rigor on top: evidence anchoring, hypothesis-before-read, adversarial self-check, coverage accounting.
+There are three layers:
+
+- **Router skills** decide what discipline applies. `/fable` reads your context, identifies the domain (or domains), and activates the right principles and gates. `/fable-mode` layers on maximum investigation rigor for high-stakes work.
+- **Universal skills** apply in any domain — adversarial disproof, evidence-anchored reasoning, plan gating, coverage accounting, root-cause analysis.
+- **Domain skills** carry the specific discipline for one field — backtest rigor for trading, threat modeling for security, the Mom Test for founders, leakage detection for ML.
 
 ---
 
@@ -25,88 +28,146 @@ Every skill is a set of operating instructions: principles, verification gates, 
 npx fable5-skill-kit
 ```
 
-Copies all skills into `~/.claude/skills/`. Restart Claude Code, then use any skill with `/skill-name` in conversation.
+One command. Downloads the kit and copies all 109 skills into `~/.claude/skills/`. Restart Claude Code, then invoke any skill with `/skill-name` in a conversation.
 
-### claude.ai web
+> Prefer not to use npx? The repo also ships `install.ps1` (Windows) and `install.sh` (Mac/Linux) — clone the repo and run the one for your OS. Both do the same copy.
 
-Skills are added one file at a time via Settings → Customize → Skills → Add.
+### claude.ai (web / desktop)
 
-**To get all 17 domains in one step:** upload `skills/fable/SKILL.md`. The master router is self-contained — it embeds the principles and gates for every domain and routes automatically. You do not need to upload individual domain skills unless you want them available as standalone commands.
+Skills are uploaded one file at a time via **Settings → Customize → Skills → Add**.
 
-To add a specific skill: upload its `SKILL.md` from `skills/` or `domains/<name>/skills/<skill-name>/`.
+**To cover all 17 domains in a single upload:** upload `skills/fable/SKILL.md`. The master router is self-contained — it embeds the condensed principles and verification gates for every domain and routes automatically, so you don't need to upload the individual domain skills.
+
+To add a specific skill on its own, upload its `SKILL.md` from `skills/<name>/` or `domains/<domain>/skills/<skill-name>/`.
+
+---
+
+## How to use it
+
+### The one-move default
+
+At the start of any real task, invoke the router:
+
+```
+/fable
+```
+
+`/fable` reads what you're working on, names the domain, and outputs the principles in effect, the gates it will hold your work to, and which specific skills to pull in. Everything after that runs under that discipline. For most work this is the only skill you need to invoke by hand.
+
+**What that looks like in practice.** You paste a failing test and ask Claude to fix it:
+
+```
+You: /fable
+     Here's a stack trace from our payment webhook — it double-charges on retry. Fix it.
+
+Claude: DOMAIN ACTIVATED: software-engineering
+        PRINCIPLES IN EFFECT: reproduce before fixing · map callers before editing ·
+        idempotency is the default for anything that can retry · verify behavior not intent
+        GATES TO RUN: reproduction · regression-proof test · blast radius · behavioral execution
+        SKILLS TO USE: /debug-isolator, /root-cause-first
+
+        Before touching code: the double-charge on retry is an idempotency gap, not a
+        webhook bug. Reproducing first...
+```
+
+Instead of jumping to a plausible patch, Claude reproduces the failure, finds the class-level cause (a non-idempotent retry path), writes a test that fails before the fix and passes after, and checks every caller before it calls the work done.
+
+### Maximum rigor for high-stakes work
+
+When a mistake is expensive — a production migration, a security review, a trading change — stack the behavioral layer on top:
+
+```
+/fable
+/fable-mode
+```
+
+`/fable-mode` forces evidence anchoring (every claim cites a source), hypothesis-before-read (state what you expect before opening a file), adversarial self-check (try to *disprove* each finding before shipping it), and coverage accounting (name what you checked *and* what you skipped).
+
+### Gate an implementation before any code is written
+
+```
+/plan-gate
+```
+
+Produces GOAL → CURRENT STATE → STEPS → OUT OF SCOPE → RISKS → ASSUMPTIONS and **stops for your approval** before writing a single file. Use it whenever "just start coding" would be a mistake.
+
+### Reach for a specific skill directly
+
+You can always invoke a domain or universal skill without the router when you already know what you need:
+
+```
+/backtest-discipline    # trading: forces a stated fill model, out-of-sample split, slippage survival
+/momtest-auditor        # founders: rejects "they said they'd buy" as validation evidence
+/leakage-detector       # ML: audits every feature for a timestamp available at prediction time
+/adversarial-disproof   # any domain: three-lens disproof of a conclusion before you act on it
+```
 
 ---
 
 ## Skill Index
 
-### Start here
+### Router & gating
 
 | Skill | What it does |
 |-------|-------------|
-| `/fable` | Detects domain from context, activates principles + gates + skill list for that domain |
-| `/fable-mode` | Maximum investigation rigor: evidence anchoring, hypothesis loops, adversarial self-check |
-| `/plan-gate` | Gates any implementation: GOAL → CURRENT STATE → STEPS → RISKS → stop for approval |
+| `/fable` | Detects the domain from context; activates its principles, gates, and skill list |
+| `/fable-mode` | Behavioral rigor layer: evidence anchoring, hypothesis-before-read, adversarial self-check, coverage accounting |
+| `/plan-gate` | Gates any implementation: GOAL → CURRENT STATE → STEPS → OUT OF SCOPE → RISKS → ASSUMPTIONS, then stops for approval |
 
-### Universal skills
+### Universal skills (any domain)
 
 | Skill | What it does |
 |-------|-------------|
-| `/adversarial-disproof` | Three-level disproof of any finding before shipping |
-| `/evidence-reasoning` | Source hierarchy enforcement — cite primary, flag inference |
-| `/code-investigation` | Cartography-first codebase investigation |
-| `/root-cause-first` | Class-level root cause, not instance-level patches |
-| `/assumption-flagging` | Surface hidden assumptions before they become bugs |
-| `/scope-fence` | Explicit in/out-of-scope declaration before any task |
-| `/uncertainty-handling` | Calibrated uncertainty — confident where earned, explicit where not |
-| `/coverage-accounting` | Audit what was checked vs skipped |
-| `/security-threat-modeling` | STRIDE threat enumeration + residual risk register |
-| `/hypothesis-led` | Answer-first reasoning: form a hypothesis, then verify |
-| `/iterative-refinement` | Named failure modes per iteration, not generic "improve" |
+| `/adversarial-disproof` | Three-lens disproof (correctness, completeness, impact) of a conclusion before acting on it |
+| `/evidence-reasoning` | Every claim carries {source, location, quote}; unevidenced assertions are flagged |
+| `/assumption-flagging` | Surfaces hidden assumptions with risk level; resolves the high-risk ones before proceeding |
+| `/scope-fence` | Explicit in-scope / out-of-scope declaration before starting |
+| `/coverage-accounting` | Tracks what was checked vs skipped; nothing is silently skipped |
+| `/uncertainty-handling` | Calibrated confidence — certain where earned, explicit where not |
+| `/cartography-first` | Maps unfamiliar territory (codebase, docs) with shallow reads before any deep dive |
+| `/hypothesis-before-read` | State what you expect to find before each read; compare after |
+| `/code-investigation` | Full 5-phase protocol for audits, gap analysis, architecture review |
+| `/root-cause-first` | Fixes the class and its cause, not the single visible instance |
+| `/self-correction-loop` | Iterate on named failure modes, not vague "make it better" |
+| `/verified-done` | Verify behavior in a running context before claiming a task complete |
+| `/enterprise-architect` | System-level architecture decisions, trade-offs, ADRs, migration paths |
+| `/system-design` | Greenfield component design with capacity and failure modes |
+| `/security-threat-modeling` | STRIDE enumeration + residual-risk register |
+| `/statistical-analysis` | Statistical rigor — tests, power, honest interpretation |
+| `/mathematical-reasoning` | Step-verified mathematical work |
+| `/multimodal-analysis` | Disciplined analysis of images, video, and mixed media |
+| `/document-mastery` | Audience-and-purpose-first writing for reports, specs, memos |
+| `/idea-generation` | Structured divergent ideation before converging |
+| `/image-refinement` | Iterative image refinement against named defects |
+| `/video-editing` | Disciplined video edit planning and review |
+| `/long-task-orchestration` | Structure and sequence long multi-phase work |
+| `/multi-agent-orchestration` | Coordinate multiple agents on independent sub-tasks |
+| `/context-budget-management` | Manage finite context on long-running tasks |
+| `/plan-gate` | (see Router & gating above) |
 
 ### Domain skills
 
+Each domain ships 5 skills (founder-entrepreneur has 6). Every domain also includes a `domain_pack.md` (principles + walkthrough) and `verification_gates.md` (pass/fail gates) that `/fable` draws on.
+
 | Domain | Skills |
 |--------|--------|
-| **software-engineering** | `/debug-isolator` `/refactor-gate` `/api-contract-verifier` + 2 more |
+| **software-engineering** | `/debug-isolator` `/refactor-gate` `/api-contract-verifier` `/migration-safety` `/race-condition-prober` |
 | **trading-finance** | `/backtest-discipline` `/execution-analysis` `/risk-first-sizing` `/regime-awareness` `/trade-journaling` |
 | **architecture-systems** | `/adr-writer` `/capacity-planner` `/failure-mode-mapper` `/observability-designer` `/migration-strategist` |
-| **marketing-sales** | `/icp-sharpener` `/channel-attribution-auditor` `/copy-testing-loop` |
-| **legal-compliance** | `/jurisdiction-first` `/contract-risk-scan` `/compliance-gap-mapper` |
-| **creative-media** | `/brief-sharpener` `/consistency-enforcer` `/iterative-image-refiner` |
-| **data-science-ml** | `/leakage-detector` `/eval-metric-alignment` `/drift-monitor-designer` |
-| **devops-infrastructure** | `/blast-radius-estimator` `/runbook-writer` `/cost-anomaly-scanner` |
-| **product-management** | `/hypothesis-prioritizer` `/north-star-aligner` `/stakeholder-no-framer` |
-| **research-academic** | `/source-hierarchy-enforcer` `/harking-detector` `/so-what-extractor` |
-| **operations-supply-chain** | `/bullwhip-detector` `/process-reality-checker` `/sop-writer` |
-| **business-strategy** | `/mece-decomposer` `/so-what-enforcer` `/scenario-planner` |
-| **personal-productivity** | `/context-switch-minimizer` `/decision-journal-writer` `/weekly-review-runner` |
-| **founder-entrepreneur** | `/momtest-auditor` `/term-sheet-analyzer` `/cofounder-agreement-checklist` + 3 more |
-| **startup-growth** | `/pmf-signal-reader` `/growth-model-selector` `/nrr-health-checker` |
+| **data-science-ml** | `/leakage-detector` `/baseline-first-gate` `/eval-metric-alignment` `/drift-monitor-designer` `/llm-approach-decider` |
+| **devops-infrastructure** | `/blast-radius-estimator` `/runbook-writer` `/cost-anomaly-scanner` `/drift-reconciler` `/restore-drill-verifier` |
 | **security-engineering** | `/threat-modeler` `/secure-code-reviewer` `/vulnerability-triager` `/dependency-auditor` `/incident-responder` |
+| **product-management** | `/hypothesis-prioritizer` `/north-star-aligner` `/stakeholder-no-framer` `/discovery-interview-auditor` `/market-sizing-builder` |
+| **founder-entrepreneur** | `/momtest-auditor` `/term-sheet-analyzer` `/cofounder-agreement-checklist` `/bottoms-up-market-sizer` `/cap-table-day-one` `/manual-traction-ladder` |
+| **startup-growth** | `/pmf-signal-reader` `/growth-model-selector` `/nrr-health-checker` `/growth-loop-mapper` `/stage-playbook-enforcer` |
+| **marketing-sales** | `/icp-sharpener` `/channel-attribution-auditor` `/copy-testing-loop` `/lead-definition-reconciler` `/deliverability-collapse-triage` |
+| **business-strategy** | `/mece-decomposer` `/so-what-enforcer` `/framework-fit-gate` `/problem-statement-lock` `/scenario-stress-planner` |
+| **legal-compliance** | `/jurisdiction-first` `/contract-risk-scan` `/compliance-gap-mapper` `/authority-hierarchy-check` `/privacy-reach-triage` |
+| **research-academic** | `/source-hierarchy-enforcer` `/harking-detector` `/so-what-extractor` `/claims-boundary-auditor` `/synthesis-matrix-builder` |
+| **creative-media** | `/brief-sharpener` `/consistency-enforcer` `/iterative-image-refiner` `/repurposing-cascade` `/scene-continuity-planner` |
+| **operations-supply-chain** | `/bullwhip-detector` `/process-reality-checker` `/sop-writer` `/safety-stock-calibrator` `/single-source-exposure-mapper` |
+| **personal-productivity** | `/context-switch-minimizer` `/decision-journal-writer` `/weekly-review-runner` `/energy-task-matcher` `/productivity-theater-detector` |
 | **healthcare-life-sciences** | Domain pack + verification gates included; dedicated skills coming soon |
-
----
-
-## Usage patterns
-
-**Session start, any domain:**
-```
-/fable
-```
-Reads the conversation, detects the domain, outputs the relevant principles and gates. Work proceeds under that discipline.
-
-**Hard investigation, maximum rigor:**
-```
-/fable
-/fable-mode
-```
-Domain routing + behavioral discipline. Use when mistakes are costly.
-
-**Gate an implementation before writing code:**
-```
-/plan-gate
-```
-Produces GOAL → CURRENT STATE → STEPS → OUT OF SCOPE → RISKS → ASSUMPTIONS. Stops for approval before any file is written.
 
 ---
 
@@ -114,26 +175,34 @@ Produces GOAL → CURRENT STATE → STEPS → OUT OF SCOPE → RISKS → ASSUMPT
 
 ```
 fable5-skill-kit/
-├── skills/                     # 26 universal + router skills
-│   ├── fable/SKILL.md          # Master router — start here
-│   ├── fable-mode/SKILL.md     # Behavioral rigor layer
-│   ├── plan-gate/SKILL.md      # Implementation gating
+├── skills/                      # 26 universal skills + 2 routers (/fable, /fable-mode)
+│   ├── fable/SKILL.md           # Master router — start here
+│   ├── fable-mode/SKILL.md      # Behavioral rigor layer
+│   ├── plan-gate/SKILL.md       # Implementation gating
 │   └── ...
-├── domains/                    # 17 domain packs
+├── domains/                     # 17 domains
 │   ├── software-engineering/
-│   │   ├── domain_pack.md
-│   │   ├── verification_gates.md
-│   │   └── skills/
+│   │   ├── domain_pack.md       # Principles + sample walkthrough
+│   │   ├── verification_gates.md # Pass/fail gates
+│   │   └── skills/              # The domain's SKILL.md files
 │   └── ...
-├── core/                       # Framework files
-├── install.ps1                 # Windows install
-└── install.sh                  # Mac/Linux install
+├── core/                        # Framework files shared across domains
+├── bin/install.js               # npx entry point
+├── install.ps1                  # Windows install (fallback)
+├── install.sh                   # Mac/Linux install (fallback)
+├── package.json
+├── LICENSE                      # MIT
+└── README.md
 ```
 
 ---
 
 ## Notes
 
-- Skills are opt-in — they only activate when invoked. No effect on default model behavior.
-- Works with any Claude model: Haiku, Sonnet, Opus, Fable.
-- Healthcare dedicated skills are pending a follow-up session to meet the evidence standards that domain requires.
+- **Opt-in and safe.** Skills only activate when you invoke them. They do not modify the model's system prompt or change default behavior when unused.
+- **Model-agnostic.** Written by Fable 5 for maximum rigor, but readable and useful on any Claude model.
+- **Healthcare.** The healthcare-life-sciences domain currently ships its domain pack and verification gates; dedicated skills are pending a follow-up session to meet the evidence standards that field requires.
+
+## License
+
+MIT — see [LICENSE](LICENSE).
