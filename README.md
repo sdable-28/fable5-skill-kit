@@ -21,19 +21,11 @@ Every skill is a set of operating instructions: principles, verification gates, 
 
 ### Claude Code
 
-Download this repo, then run the install script from the repo folder:
-
-**Windows:**
-```powershell
-.\install.ps1
+```
+npx fable5-skill-kit
 ```
 
-**Mac / Linux:**
-```bash
-bash install.sh
-```
-
-The script copies all skills into `~/.claude/skills/`. Restart Claude Code, then use any skill with `/skill-name` in conversation.
+Copies all skills into `~/.claude/skills/`. Restart Claude Code, then use any skill with `/skill-name` in conversation.
 
 ### claude.ai web
 
@@ -115,13 +107,6 @@ Domain routing + behavioral discipline. Use when mistakes are costly.
 /plan-gate
 ```
 Produces GOAL → CURRENT STATE → STEPS → OUT OF SCOPE → RISKS → ASSUMPTIONS. Stops for approval before any file is written.
-
-**Specific domain skills:**
-```
-/backtest-discipline     # trading: data integrity + fill model gates
-/momtest-auditor         # founders: validation quote compliance
-/leakage-detector        # ML: feature timestamp audit
-```
 
 ---
 
