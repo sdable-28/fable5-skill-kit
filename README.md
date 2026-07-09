@@ -40,15 +40,26 @@ Skills are uploaded one file at a time via **Settings → Customize → Skills �
 
 To add a specific skill on its own, upload its `SKILL.md` from `skills/<name>/` or `domains/<domain>/skills/<skill-name>/`.
 
-### Other models (ChatGPT, Gemini, Cursor, …)
+### Other models (ChatGPT, Gemini, …)
 
-A skill is a standing-instructions file. Load it wherever a platform keeps persistent instructions and the model applies it for the whole session — no chat pasting:
+A skill is just a text file of instructions, so any model can use it. Other platforms don't have the `/skill-name` shortcut, so instead of *triggering* a skill you *save it once* as the model's instructions — then it applies automatically every time you use that assistant.
 
-- **API** — pass a `SKILL.md` as the `system` prompt (OpenAI, Gemini, Anthropic, or any provider).
-- **Assistants & projects** — a Custom GPT, Gemini Gem, or ChatGPT/Claude Project. Put a skill in its instructions, or drop several into its knowledge base and let the model pull the right one.
-- **AI coding tools** — as a rules file: `.cursorrules` (Cursor), `.windsurfrules` (Windsurf), or `AGENTS.md` / `CLAUDE.md` at the repo root.
+Start with **`skills/fable/SKILL.md`** — it's the router, so this one file covers all 17 domains.
 
-Use `skills/fable/SKILL.md` in any of these to get the same domain auto-routing `/fable` provides in Claude. The only Claude-specific part is the `/skill-name` trigger — the discipline is fully portable.
+**ChatGPT** (a Custom GPT — reusable, applies automatically):
+1. Open [`skills/fable/SKILL.md`](skills/fable/SKILL.md) and copy all of its text.
+2. Go to **chatgpt.com → Explore GPTs → Create**.
+3. Open the **Configure** tab and paste the text into the **Instructions** box.
+4. Name it "Fable" and click **Create**. Chatting with that GPT now applies the skill on every message.
+
+**Gemini** (a Gem — same idea):
+1. Copy the text of [`skills/fable/SKILL.md`](skills/fable/SKILL.md).
+2. Go to **gemini.google.com → Gems → New Gem**.
+3. Paste the text into the **Instructions** box and **Save**.
+
+To use one specific skill instead of the router, do the exact same steps with that skill's `SKILL.md` (e.g. `domains/trading-finance/skills/backtest-discipline/SKILL.md`).
+
+> **Developers:** the same file works as the `system` prompt via any API (OpenAI, Gemini, Anthropic), or as a rules file (`.cursorrules`, `.windsurfrules`, `AGENTS.md`) in AI coding tools.
 
 ---
 
