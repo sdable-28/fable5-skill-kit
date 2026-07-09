@@ -1,50 +1,47 @@
 # fable5-skill-kit
 
-A collection of discipline skills for Claude — built by Fable 5, usable by any model.
+Discipline skills for Claude — built by Fable 5, usable by any model.
 
-26 universal skills + 81 domain skills across 17 domains. One master router (`/fable`) covers all of them in a single upload.
+26 universal skills + 81 domain skills across 17 domains. The master skill `/fable` auto-detects your domain and activates the right discipline — invoke it once at session start and it handles the rest.
 
 ---
 
 ## What is this
 
-Every skill in this kit is a set of operating instructions: principles, verification gates, and procedures for a specific type of work. They don't change what Claude can do — they change how rigorously it does it.
+Every skill is a set of operating instructions: principles, verification gates, and procedures for a specific type of work. They don't change what Claude can do — they change how rigorously it does it.
 
 - **Universal skills** apply to any domain: adversarial disproof, evidence reasoning, plan gating, code investigation, root cause analysis, and more.
 - **Domain skills** apply the right discipline for specific work: backtest rigor for trading, threat modeling for security, mom-test compliance for startups, and so on across 17 domains.
-- **`/fable`** is the master router: detects your domain from context, activates the right principles and gates, lists which skills to use. One file, all 17 domains.
-- **`/fable-mode`** activates maximum investigation rigor: evidence anchoring, hypothesis-before-read, adversarial self-check, coverage accounting. Use on hard tasks.
+- **`/fable`** is the master router: reads your context, detects the domain, activates the right principles and gates, and lists which skills to use next.
+- **`/fable-mode`** adds maximum investigation rigor on top: evidence anchoring, hypothesis-before-read, adversarial self-check, coverage accounting.
 
 ---
 
 ## Install
 
-### Option A — Claude Code (all skills, one step)
+### Claude Code
 
-**Windows (PowerShell):**
-```powershell
-irm https://raw.githubusercontent.com/YOUR_USERNAME/fable5-skill-kit/main/install.ps1 | iex
-```
+Download this repo, then run the install script from the repo folder:
 
-Or download and run locally:
+**Windows:**
 ```powershell
 .\install.ps1
 ```
 
-**Mac / Linux (bash):**
+**Mac / Linux:**
 ```bash
-curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/fable5-skill-kit/main/install.sh | bash
+bash install.sh
 ```
 
-After install, restart Claude Code. Use any skill with `/skill-name` in conversation.
+The script copies all skills into `~/.claude/skills/`. Restart Claude Code, then use any skill with `/skill-name` in conversation.
 
-### Option B — claude.ai web (individual upload)
+### claude.ai web
 
-1. Go to `claude.ai` → Settings → Customize → Skills → Add
-2. Upload any `.md` file from the `skills/` folder
-3. Invoke in conversation with `/skill-name`
+Skills are added one file at a time via Settings → Customize → Skills → Add.
 
-**Recommended starting point:** upload `skills/fable/SKILL.md` — the master router covers all 17 domains in one file. Then add specific domain or universal skills as needed.
+**To get all 17 domains in one step:** upload `skills/fable/SKILL.md`. The master router is self-contained — it embeds the principles and gates for every domain and routes automatically. You do not need to upload individual domain skills unless you want them available as standalone commands.
+
+To add a specific skill: upload its `SKILL.md` from `skills/` or `domains/<name>/skills/<skill-name>/`.
 
 ---
 
@@ -54,9 +51,9 @@ After install, restart Claude Code. Use any skill with `/skill-name` in conversa
 
 | Skill | What it does |
 |-------|-------------|
-| `/fable` | Master router: detects domain from context, activates principles + gates + skill list |
+| `/fable` | Detects domain from context, activates principles + gates + skill list for that domain |
 | `/fable-mode` | Maximum investigation rigor: evidence anchoring, hypothesis loops, adversarial self-check |
-| `/plan-gate` | Gates any implementation: GOAL → CURRENT STATE → STEPS → RISKS → STOP for approval |
+| `/plan-gate` | Gates any implementation: GOAL → CURRENT STATE → STEPS → RISKS → stop for approval |
 
 ### Universal skills
 
@@ -93,8 +90,8 @@ After install, restart Claude Code. Use any skill with `/skill-name` in conversa
 | **personal-productivity** | `/context-switch-minimizer` `/decision-journal-writer` `/weekly-review-runner` |
 | **founder-entrepreneur** | `/momtest-auditor` `/term-sheet-analyzer` `/cofounder-agreement-checklist` + 3 more |
 | **startup-growth** | `/pmf-signal-reader` `/growth-model-selector` `/nrr-health-checker` |
-| **security-engineering** | See universal `/security-threat-modeling` + domain pack for specialized skills |
-| **healthcare-life-sciences** | Domain pack available; dedicated skills coming in v1.1 |
+| **security-engineering** | `/threat-modeler` `/secure-code-reviewer` `/vulnerability-triager` `/dependency-auditor` `/incident-responder` |
+| **healthcare-life-sciences** | Domain pack + verification gates included; dedicated skills coming soon |
 
 ---
 
@@ -104,20 +101,20 @@ After install, restart Claude Code. Use any skill with `/skill-name` in conversa
 ```
 /fable
 ```
-Detects the domain from what you're working on. Outputs principles + critical gates + skills to use. Work proceeds under that discipline.
+Reads the conversation, detects the domain, outputs the relevant principles and gates. Work proceeds under that discipline.
 
 **Hard investigation, maximum rigor:**
 ```
 /fable
 /fable-mode
 ```
-Domain routing + behavioral discipline. Use this when mistakes are costly.
+Domain routing + behavioral discipline. Use when mistakes are costly.
 
 **Gate an implementation before writing code:**
 ```
 /plan-gate
 ```
-Produces GOAL → CURRENT STATE → STEPS → OUT OF SCOPE → RISKS → ASSUMPTIONS. Stops for your approval before any file is written.
+Produces GOAL → CURRENT STATE → STEPS → OUT OF SCOPE → RISKS → ASSUMPTIONS. Stops for approval before any file is written.
 
 **Specific domain skills:**
 ```
@@ -131,9 +128,9 @@ Produces GOAL → CURRENT STATE → STEPS → OUT OF SCOPE → RISKS → ASSUMPT
 ## Repository structure
 
 ```
-fable-kit/
+fable5-skill-kit/
 ├── skills/                     # 26 universal + router skills
-│   ├── fable/SKILL.md          # Master router (start here)
+│   ├── fable/SKILL.md          # Master router — start here
 │   ├── fable-mode/SKILL.md     # Behavioral rigor layer
 │   ├── plan-gate/SKILL.md      # Implementation gating
 │   └── ...
@@ -141,30 +138,17 @@ fable-kit/
 │   ├── software-engineering/
 │   │   ├── domain_pack.md
 │   │   ├── verification_gates.md
-│   │   ├── skills_index.md
 │   │   └── skills/
 │   └── ...
 ├── core/                       # Framework files
-│   ├── system_prompt_opus.md
-│   └── ...
 ├── install.ps1                 # Windows install
 └── install.sh                  # Mac/Linux install
 ```
 
 ---
 
-## Versioning
-
-| Version | Contents |
-|---------|----------|
-| v1.0 | 26 universal skills, 81 domain skills, 15 domain packs with full verification gates |
-| v1.1 (planned) | Healthcare & Life Sciences full skills (currently domain pack only) |
-| v1.2 (planned) | Offensive Security / Penetration Testing (dedicated Fable session, ships last) |
-
----
-
 ## Notes
 
-- Skills are opt-in — they only activate when invoked. They do not override any model's system prompt or default behavior.
-- Works with any Claude model: Haiku, Sonnet, Opus, Fable. The skills were written by Fable 5 for maximum rigor but are readable and useful at any tier.
-- Healthcare skills and offensive security skills are intentionally deferred — they require a dedicated Fable session to meet the evidence and safety standards those domains demand.
+- Skills are opt-in — they only activate when invoked. No effect on default model behavior.
+- Works with any Claude model: Haiku, Sonnet, Opus, Fable.
+- Healthcare dedicated skills are pending a follow-up session to meet the evidence standards that domain requires.
