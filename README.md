@@ -82,10 +82,12 @@ When a mistake is expensive — a production migration, a security review, a tra
 
 `/fable-mode` is self-contained: it forces evidence anchoring (every claim cites a source), hypothesis-before-read (state what you expect before opening a file), adversarial self-check (try to *disprove* each finding before shipping it), and coverage accounting (name what you checked *and* what you skipped). It stays in effect for the rest of the conversation.
 
-Want the domain-specific gates *and* the rigor layer? Invoke them in two back-to-back messages — one skill per message is how the interface works:
+Want the domain-specific gates *and* the rigor layer working together on one complex task? The interface runs one skill per message, so use two messages and **put the task in the second one** — that way nothing starts until both are active:
 
-1. First message: `/fable` (plus your task) — activates the domain's principles and gates.
-2. Next message: `/fable-mode` — adds the rigor layer on top for everything that follows.
+1. **First message:** `/fable-mode` — arms the rigor layer. No task yet; it just waits.
+2. **Second message:** `/fable` + your task — activates the domain's gates and hands over the task, with the rigor layer from step 1 already in effect.
+
+Skills stay active for the rest of the conversation, so loading `/fable-mode` first means it governs the work `/fable` picks up. You get domain + task + rigor in one pass.
 
 ### Gate an implementation before any code is written
 
