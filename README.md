@@ -74,14 +74,18 @@ Instead of jumping to a plausible patch, Claude reproduces the failure, finds th
 
 ### Maximum rigor for high-stakes work
 
-When a mistake is expensive — a production migration, a security review, a trading change — invoke **both**, one after the other in the same conversation: `/fable` first to activate the domain, then `/fable-mode` to layer maximum rigor on top.
+When a mistake is expensive — a production migration, a security review, a trading change — use the rigor layer:
 
 ```
-/fable          ← run this first (activates the domain's principles + gates)
-/fable-mode     ← then run this (adds the behavioral rigor layer)
+/fable-mode
 ```
 
-`/fable-mode` forces evidence anchoring (every claim cites a source), hypothesis-before-read (state what you expect before opening a file), adversarial self-check (try to *disprove* each finding before shipping it), and coverage accounting (name what you checked *and* what you skipped).
+`/fable-mode` is self-contained: it forces evidence anchoring (every claim cites a source), hypothesis-before-read (state what you expect before opening a file), adversarial self-check (try to *disprove* each finding before shipping it), and coverage accounting (name what you checked *and* what you skipped). It stays in effect for the rest of the conversation.
+
+Want the domain-specific gates *and* the rigor layer? Invoke them in two back-to-back messages — one skill per message is how the interface works:
+
+1. First message: `/fable` (plus your task) — activates the domain's principles and gates.
+2. Next message: `/fable-mode` — adds the rigor layer on top for everything that follows.
 
 ### Gate an implementation before any code is written
 
